@@ -4,6 +4,7 @@ import requests
 import ast
 import json
 from config import wechat_conf
+import simplejson
 class WeChat(object):
 
     def __init__(self):
@@ -25,8 +26,8 @@ class WeChat(object):
                 "articles":
                     [
                         {
-                            "title": subject,
-                            "description": msg,
+                            "title": subject, 
+                            "description": msg, 
                             "url": "",
                             "picurl": ""
                         }
@@ -34,14 +35,12 @@ class WeChat(object):
                 },
             "safe": "0"
         }
-        j_str = str(payload)
-        print j_str
+        
         r = requests.post(self.msg_url + "?access_token=" + self.get_token(),
-                          json=ast.literal_eval(j_str))
-        print r.status_code
-        print r.text
+                          data=simplejson.dumps(payload, ensure_ascii=False).encode('utf8'),
+                          headers={'Content-type':'application/json', 'charset': 'utf-8'})
         return r
-
+    
     def get_token(self):
         payload = {
             "corpid": self.corpid,
